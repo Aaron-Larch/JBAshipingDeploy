@@ -16,7 +16,7 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private byte[] testcolum; //make sure types match for zip file
+    private byte[] storfile; //make sure types match for zip file
     private String keyquestion;
 	private String keyanswer;
     private Long roleid;
@@ -83,12 +83,12 @@ public class User {
         this.roles = roles; // save a value
     }
 
-	public byte[] getTestcolum() {
-		return testcolum;
+	public byte[] getStorFile() {
+		return storfile;
 	}
 
-	public void setTestcolum(byte[] testcolum) {
-		this.testcolum = testcolum;
+	public void setStorFile(byte[] storfile) {
+		this.storfile = storfile;
 	}
 	
 	public String getKeyquestion() {

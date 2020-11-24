@@ -1,5 +1,6 @@
 package com.webbuild.javabrains.jdbc;
 
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -14,28 +15,31 @@ import com.webbuild.javabrains.model.TableObjects;
 
 public class ExternalConnection{
 	//Static Server connection Data Source
-		private static String myDriver = "oracle.jdbc.OracleDriver";
-		private static String server = "jdbc:oracle:thin:@localhost:1521:xe";
-		private static String username = "system";
-		private static String password = "student";
-		static List<TableObjects>Topics;
+	private static String DATABASE_URL = "postgres://hdbmcmpbanzxib:25c89265145e7b8c6ade73cbd530502300a7ac140b1c1e68d45d84fa4b86eab7@ec2-54-157-88-70.compute-1.amazonaws.com:5432/d8ajqksjp4lbaj";
+	static List<TableObjects>Topics;
 
-		//connect to a remote server
-		public static Connection dbConnect() {
-			try {
-				// create a handshake connection between java and the desired SQL server. 
-				Class.forName(myDriver);
-				//connect to an SQL  database.
-				Connection conn = DriverManager.getConnection(server, username, password);
-				return conn;
+	//connect to a remote web server
+	public static Connection dbConnect() {
+		try {
+			// create a handshake connection between java and the desired SQL server. 
+			URI dbUri = new URI(System.getenv(DATABASE_URL));
+			
+			//Separate key items from URI 
+			String username = dbUri.getUserInfo().split(":")[0];
+			String password = dbUri.getUserInfo().split(":")[1];
 				
-			}catch(Exception e){
-				//error handling
-				System.err.println("Got an exception! ");
-				System.err.println(e.getMessage());
-				return null;
-			}
+			//Recombine Uri information into a url connection statement
+			String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+
+			Connection conn = DriverManager.getConnection(dbUrl, username, password);//establish connection
+			return conn;		
+		}catch(Exception e){
+			//error handling
+			System.err.println("Got an exception! ");
+			System.err.println(e.getMessage());
+			return null;
 		}
+	}
 		
 		//populate data layer
 		public static List<TableObjects> Shipping(String field, String role) {
